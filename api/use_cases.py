@@ -28,7 +28,6 @@ class ExpClaim:
             )
             print("EXP result:", decode)
         except ExpiredSignatureError as e:
-            print(e)
             raise ExpiredSignatureError("Signature has expired (exp)")
         return True
 
