@@ -9,6 +9,10 @@ API_JWT_DEFAULT_EXP = datetime.utcnow() + timedelta(seconds=1)
 API_JWT_DEFAULT_NBF = datetime.utcnow() + timedelta(seconds=1)
 
 
+# all use cases are based on offical documentation
+# https://pyjwt.readthedocs.io/en/stable/usage.html#issuer-claim-iss
+
+
 # exp claim
 class ExpClaim:
     def generate_jwt_token_exp(self) -> str:
