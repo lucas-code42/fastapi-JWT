@@ -1,26 +1,26 @@
+from typing import Annotated
 from settings import settings
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Header
 import jwt
-
 
 
 router = APIRouter()
 
 
-@router.get(
-    f"{settings.API_DEFAULT_PATH}/auth",
-    response_model=str,
+@router.post(
+    f"{settings.API_DEFAULT_PATH}/login",
+    response_model=bool,
     status_code=status.HTTP_200_OK,
-    description="returns a jwt token"
+    description="check if the user is authorized"
 )
-async def auth() -> str:
-    return _generate_jwt_token()
+async def login(authorization_token: str = Header(default=None)) -> bool:
+    print(authorization_token)
+    return _decode_jwt_token(token=authorization_token)
 
 
-def _generate_jwt_token() -> str:
-    payload = {"exp": settings.API_JWT_DEFAULT_EXP}
-    return jwt.encode(
-        payload=payload,
+def _decode_jwt_token(token: str) -> bool:
+    token_is_valid = jwt.decode(
+        token,
         key=settings.API_JWT_KEY,
-        algorithm=settings.API_JWT_DEFAULT_ALGORITHM
+        algorithms=[settings.API_JWT_DEFAULT_ALGORITHM]
     )
