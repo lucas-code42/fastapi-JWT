@@ -15,6 +15,13 @@ API_JWT_DEFAULT_NBF = datetime.utcnow() + timedelta(seconds=1)
 
 # exp claim
 class ExpClaim:
+    """
+    Expiration Time Claim (exp)
+    The “exp” (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. 
+    The processing of the “exp” claim requires that the current date/time MUST be before the expiration date/time listed in the “exp” claim. 
+    Implementers MAY provide for some small leeway, usually no more than a few minutes, to account for clock skew. 
+    Its value MUST be a number containing a NumericDate value. Use of this claim is OPTIONAL.
+    """
     def generate_jwt_token_exp(self) -> str:
         payload = {"exp": API_JWT_DEFAULT_EXP}
         return jwt.encode(
@@ -38,6 +45,14 @@ class ExpClaim:
 
 # nbf claim
 class NbfClaim():
+    """
+    Not Before Time Claim (nbf)
+    The “nbf” (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing.
+    The processing of the “nbf” claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the “nbf” claim. 
+    Implementers MAY provide for some small leeway, usually no more than a few minutes, to account for clock skew. 
+    Its value MUST be a number containing a NumericDate value. 
+    Use of this claim is OPTIONAL.
+    """
     def generate_jwt_token_nbf(self) -> str:
         payload = {"nbf": API_JWT_DEFAULT_NBF}
         return jwt.encode(
@@ -61,6 +76,12 @@ class NbfClaim():
 
 # iss claim
 class IssClaim():
+    """
+    Audience Claim (aud)
+    The “aud” (audience) claim identifies the recipients that the JWT is intended for. 
+    Each principal intended to process the JWT MUST identify itself with a value in the audience claim. 
+    If the principal processing the claim does not identify itself with a value in the “aud” claim when this claim is present, then the JWT MUST be rejected.
+    """
     def generate_jwt_token_iss(self) -> str:
         payload = {"iss": "urn:lcs42"}
         return jwt.encode(
@@ -82,31 +103,16 @@ class IssClaim():
             raise InvalidIssuerError("Invalid issuer")
 
 
-# iss claim
-class IssClaim():
-    def generate_jwt_token_iss(self) -> str:
-        payload = {"iss": "urn:lcs42"}
-        return jwt.encode(
-            payload=payload,
-            key=API_JWT_KEY,
-            algorithm=API_JWT_DEFAULT_ALGORITHM
-        )
-
-    def decode_jwt_token_iss(self, token: str) -> bool:
-        try:
-            decode = jwt.decode(
-                token,
-                key=API_JWT_KEY,
-                issuer="urn:lcs42",
-                algorithms=API_JWT_DEFAULT_ALGORITHM
-            )
-            print("ISS result:", decode)
-        except InvalidIssuerError:
-            raise InvalidIssuerError("Invalid issuer")
-
-
-# iss aud
+# aud claim
 class AudClaim():
+    """
+    Audience Claim (aud)
+    The “aud” (audience) claim identifies the recipients that the JWT is intended for. 
+    Each principal intended to process the JWT MUST identify itself with a value in the audience claim. 
+    If the principal processing the claim does not identify itself with a value in the “aud” claim when this claim is present, then the JWT MUST be rejected.
+
+    If the audience claim is incorrect, jwt.InvalidAudienceError will be raised.
+    """
     def generate_jwt_token_aud(self) -> str:
         payload = {"aud": ["urn:lcs42", "pythonjwt"]}
         return jwt.encode(
@@ -129,8 +135,17 @@ class AudClaim():
             raise InvalidAudienceError("Invalid audience")
 
 
-# iat aud
+# iat claim
 class IatClaim():
+    """
+    Issued At Claim (iat)
+    The iat (issued at) claim identifies the time at which the JWT was issued. 
+    This claim can be used to determine the age of the JWT. 
+    Its value MUST be a number containing a NumericDate value. 
+    Use of this claim is OPTIONAL.
+
+    If the iat claim is not a number, an jwt.InvalidIssuedAtError exception will be raised.
+    """
     def generate_jwt_token_iat(self) -> str:
         payload = {"iat": (60 * 7 * 24), "iss": "lcs42"}  # (60 * 7 * 24) = 1week
         return jwt.encode(
