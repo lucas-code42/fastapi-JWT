@@ -4,7 +4,7 @@ from fastapi import FastAPI, Response
 from fastapi import status
 from api.settings import settings
 from typing import Dict
-from api.security import auth_exp, auth_nbf, token_generators
+from api.security import auth_exp, auth_nbf, auth_iss, token_generators
 
 
 app = FastAPI(
@@ -13,8 +13,9 @@ app = FastAPI(
     version=settings.API_VERSION,
 )
 app.include_router(token_generators.router, tags=["jwt"])
-app.include_router(auth_exp.router, tags=["auth"])
-app.include_router(auth_nbf.router, tags=["auth"])
+app.include_router(auth_exp.router, tags=["auth_exp"])
+app.include_router(auth_nbf.router, tags=["auth_nbf"])
+app.include_router(auth_iss.router, tags=["auth_iss"])
 
 
 @app.get(
