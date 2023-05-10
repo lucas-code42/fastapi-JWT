@@ -42,13 +42,18 @@ async def generate_jwt_token_exp(Authorization: str = Header(default=None)) -> s
     status_code=status.HTTP_200_OK,
     description="returns a jwt token nbf"
 )
-def generate_jwt_token_nbf(self) -> str:
-    payload = {"nbf": settings.API_JWT_DEFAULT_NBF}
-    return jwt.encode(
-        payload=payload,
-        key=settings.API_JWT_KEY,
-        algorithm=settings.API_JWT_DEFAULT_ALGORITHM
-    )
+def generate_jwt_token_nbf(Authorization: str = Header(default=None)) -> str:
+    """
+    curl -H "Authorization: toc toc" -X GET http://localhost:8080/v1/jwt/nbf
+    """
+    if __validate_authorization(auth=Authorization):
+        payload = {"nbf": settings.API_JWT_DEFAULT_NBF}
+        return jwt.encode(
+            payload=payload,
+            key=settings.API_JWT_KEY,
+            algorithm=settings.API_JWT_DEFAULT_ALGORITHM
+        )
+    raise UNAUTHORIZED
 
 
 @router.get(
