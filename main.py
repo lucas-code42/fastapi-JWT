@@ -4,6 +4,7 @@ from fastapi import FastAPI, Response
 from fastapi import status
 from api.settings import settings
 from typing import Dict
+from api.security import token_generators
 
 
 app = FastAPI(
@@ -11,6 +12,7 @@ app = FastAPI(
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
 )
+app.include_router(token_generators.router, tags=["jwt"])
 
 
 @app.get(
@@ -36,6 +38,6 @@ if __name__ == "__main__":
         workers=settings.API_DEFAULT_WORKERS,
         app="main:app",
         port=settings.API_DEFAULT_PORT,
-        host="127.0.0.1",
+        host=settings.API_DEFAULT_HOST,
         use_colors=True
     )
