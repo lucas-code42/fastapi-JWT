@@ -2,7 +2,7 @@ from api.settings import settings
 from fastapi import APIRouter, status, Header, HTTPException
 from fastapi.responses import JSONResponse
 import jwt
-from jwt import ExpiredSignatureError, ImmatureSignatureError
+from jwt import ExpiredSignatureError
 from typing import Dict, Callable
 
 
@@ -45,45 +45,6 @@ async def login_exp(Authorization: str = Header(default=None)) -> Callable[[str]
         return RESPONSE[0]
     return __decode_jwt_token_exp(token=Authorization)
 
-
-
-
-
-
-# router.get(
-#     f"{settings.API_DEFAULT_PATH}/lucas",
-#     response_model=Dict,
-#     status_code=status.HTTP_200_OK,
-#     description="check if the jwt token (nbf) is valid"
-# )
-# async def login_nbf(Authorization: str = Header(default=None)) -> Callable[[str], JSONResponse | HTTPException]:
-#     """
-#     curl -H "Authorization: <YOUR_JWT_TOKEN>" -X GET http://localhost:8080/v1/jwt/login-nbf
-#     """
-#     def __decode_jwt_token_nbf(token: str) -> (JSONResponse | HTTPException):
-#         try:
-#             jwt.decode(
-#                 token,
-#                 key=settings.API_JWT_KEY,
-#                 algorithms=[settings.API_JWT_DEFAULT_ALGORITHM]
-#             )
-#         except ImmatureSignatureError:
-#             raise UNAUTHORIZED
-#         return RESPONSE[1]
-#     return "oi"
-
-
-router.get(
-    f"{settings.API_DEFAULT_PATH}/lucas",
-    response_model=Dict,
-    status_code=status.HTTP_200_OK,
-    description="check if the jwt token (nbf) is valid"
-)
-async def login_nbf():
-    """
-    curl -H "Authorization: <YOUR_JWT_TOKEN>" -X GET http://localhost:8080/v1/jwt/login-nbf
-    """
-    return "oi"
 
 
 

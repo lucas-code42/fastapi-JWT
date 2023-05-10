@@ -4,7 +4,7 @@ from fastapi import FastAPI, Response
 from fastapi import status
 from api.settings import settings
 from typing import Dict
-from api.security import token_generators, auth
+from api.security import auth_exp, auth_nbf, token_generators
 
 
 app = FastAPI(
@@ -13,7 +13,8 @@ app = FastAPI(
     version=settings.API_VERSION,
 )
 app.include_router(token_generators.router, tags=["jwt"])
-app.include_router(auth.router, tags=["auth"])
+app.include_router(auth_exp.router, tags=["auth"])
+app.include_router(auth_nbf.router, tags=["auth"])
 
 
 @app.get(
@@ -21,7 +22,7 @@ app.include_router(auth.router, tags=["auth"])
     response_model=Dict,
     response_description="responds with a JSON to informe that service is alive",
     status_code=status.HTTP_200_OK,
-    description="check if API is live",     
+    description="check if API is live",
     tags=["health"]
 )
 async def api_health(response: Response) -> Dict:
