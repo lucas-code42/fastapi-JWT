@@ -5,7 +5,7 @@ import jwt
 router = APIRouter()
 
 
-UNAUTHORIZED = HTTPException(
+API_UNAUTHORIZED = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="knock on the door before entering",
     headers={"Content-type": "application/json"}
@@ -24,7 +24,7 @@ def __validate_authorization(auth: str) -> bool:
 )
 async def generate_jwt_token_exp(Authorization: str = Header(default=None)) -> str:
     """
-    curl -H "Authorization: toc toc" -X GET http://localhost:8080/v1/jwt/exp
+    curl -H "Authorization: knock knock" -X GET http://localhost:8080/v1/jwt/exp
     """
     if __validate_authorization(Authorization):
         payload = {"exp": settings.API_JWT_DEFAULT_EXP}
@@ -33,7 +33,7 @@ async def generate_jwt_token_exp(Authorization: str = Header(default=None)) -> s
             key=settings.API_JWT_KEY,
             algorithm=settings.API_JWT_DEFAULT_ALGORITHM
         )
-    raise UNAUTHORIZED
+    raise API_UNAUTHORIZED
 
 
 @router.get(
@@ -44,7 +44,7 @@ async def generate_jwt_token_exp(Authorization: str = Header(default=None)) -> s
 )
 def generate_jwt_token_nbf(Authorization: str = Header(default=None)) -> str:
     """
-    curl -H "Authorization: toc toc" -X GET http://localhost:8080/v1/jwt/nbf
+    curl -H "Authorization: knock knock" -X GET http://localhost:8080/v1/jwt/nbf
     """
     if __validate_authorization(auth=Authorization):
         payload = {"nbf": settings.API_JWT_DEFAULT_NBF}
@@ -53,7 +53,7 @@ def generate_jwt_token_nbf(Authorization: str = Header(default=None)) -> str:
             key=settings.API_JWT_KEY,
             algorithm=settings.API_JWT_DEFAULT_ALGORITHM
         )
-    raise UNAUTHORIZED
+    raise API_UNAUTHORIZED
 
 
 @router.get(
@@ -64,7 +64,7 @@ def generate_jwt_token_nbf(Authorization: str = Header(default=None)) -> str:
 )
 def generate_jwt_token_iss(Authorization: str = Header(default=None)) -> str:
     """
-    curl -H "Authorization: toc toc" -X GET http://localhost:8080/v1/jwt/iss
+    curl -H "Authorization: knock knock" -X GET http://localhost:8080/v1/jwt/iss
     """
     if __validate_authorization(auth=Authorization):
         payload = {"iss": settings.API_JWT_DEFAULT_ISSUER}
@@ -73,7 +73,7 @@ def generate_jwt_token_iss(Authorization: str = Header(default=None)) -> str:
             key=settings.API_JWT_KEY,
             algorithm=settings.API_JWT_DEFAULT_ALGORITHM
         )
-    raise UNAUTHORIZED
+    raise API_UNAUTHORIZED
 
 
 @router.get(
@@ -82,13 +82,18 @@ def generate_jwt_token_iss(Authorization: str = Header(default=None)) -> str:
     status_code=status.HTTP_200_OK,
     description="returns a jwt token aud"
 )
-def generate_jwt_token_iss(self) -> str:
-    payload = {"aud": [settings.API_JWT_DEFAULT_ISSUER, "lcs-42"]}
-    return jwt.encode(
-        payload=payload,
-        key=settings.API_JWT_KEY,
-        algorithm=settings.API_JWT_DEFAULT_ALGORITHM
-    )
+def generate_jwt_token_iss(Authorization: str = Header(default=None)) -> str:
+    """
+    curl -H "Authorization: knock knock" -X GET http://localhost:8080/v1/jwt/aud
+    """
+    if __validate_authorization(auth=Authorization):
+        payload = {"aud": [settings.API_JWT_DEFAULT_ISSUER, "lcs-42"]}
+        return jwt.encode(
+            payload=payload,
+            key=settings.API_JWT_KEY,
+            algorithm=settings.API_JWT_DEFAULT_ALGORITHM
+        )
+    raise API_UNAUTHORIZED
 
 
 @router.get(
@@ -97,12 +102,17 @@ def generate_jwt_token_iss(self) -> str:
     status_code=status.HTTP_200_OK,
     description="returns a jwt token iat"
 )
-def generate_jwt_token_iat(self) -> str:
-    week = (60 * 7 * 24)
-    # (60 * 7 * 24) = 1week
-    payload = {"iat": week, "iss": settings.API_JWT_DEFAULT_ISSUER}
-    return jwt.encode(
-        payload=payload,
-        key=settings.API_JWT_KEY,
-        algorithm=settings.API_JWT_DEFAULT_ALGORITHM
-    )
+def generate_jwt_token_iat(Authorization: str = Header(default=None)) -> str:
+    """
+    curl -H "Authorization: knock knock" -X GET http://localhost:8080/v1/jwt/iat
+    """
+    if __validate_authorization(auth=Authorization):
+        week = (60 * 7 * 24)
+        # (60 * 7 * 24) = 1week
+        payload = {"iat": week, "iss": settings.API_JWT_DEFAULT_ISSUER}
+        return jwt.encode(
+            payload=payload,
+            key=settings.API_JWT_KEY,
+            algorithm=settings.API_JWT_DEFAULT_ALGORITHM
+        )
+    raise API_UNAUTHORIZED

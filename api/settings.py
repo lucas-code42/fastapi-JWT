@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from fastapi import HTTPException, status
+from fastapi.responses import JSONResponse
 
 
 class Settings:
@@ -11,7 +13,7 @@ class Settings:
     API_DEFAULT_PORT: int = 8080
     API_DEFAULT_WORKERS: int = 2
 
-    API_DEFAULT_AUTHORIZATION: str = "toc toc"
+    API_DEFAULT_AUTHORIZATION: str = "knock knock"
     
     API_JWT_KEY = "2ae6dee2-be05-4a1e-9d1c-1e12579b5bdf"
     API_JWT_DEFAULT_ALGORITHM = "HS256"

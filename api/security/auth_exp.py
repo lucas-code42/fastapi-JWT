@@ -4,20 +4,10 @@ from fastapi.responses import JSONResponse
 import jwt
 from jwt import ExpiredSignatureError
 from typing import Dict, Callable
+from api.middleware import API_UNAUTHORIZED, API_RESPONSES
 
 
 router = APIRouter()
-
-UNAUTHORIZED = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="not today :'(",
-    headers={"Content-type": "application/json"}
-)
-
-RESPONSE = [
-    JSONResponse(content={"CATCHPHRASES_SAY": "D’oh!"}),
-    JSONResponse(content={"HOMER_SIMPSON_SAY": "What’s up, Doc?"})
-]
 
 
 @router.get(
@@ -33,6 +23,7 @@ async def login_exp(Authorization: str = Header(default=None)) -> Callable[[str]
     curl -H "Authorization: <YOUR_JWT_TOKEN>" -X GET http://localhost:8080/v1/jwt/login-exp
     """
     print(Authorization)
+
     def __decode_jwt_token_exp(token: str) -> (JSONResponse | HTTPException):
         try:
             jwt.decode(
@@ -41,12 +32,6 @@ async def login_exp(Authorization: str = Header(default=None)) -> Callable[[str]
                 algorithms=[settings.API_JWT_DEFAULT_ALGORITHM]
             )
         except ExpiredSignatureError:
-            raise UNAUTHORIZED
-        return RESPONSE[0]
+            raise API_UNAUTHORIZED
+        return API_RESPONSES[3]
     return __decode_jwt_token_exp(token=Authorization)
-
-
-
-
-
-
